@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SchoolVerse — AI Study Platform</title>
+<style>
+:root{--bg:#07060f;--bg2:#0e0c1d;--card:rgba(255,255,255,.05);--card2:rgba(255,255,255,.09);--bd:rgba(255,255,255,.11);--tx:#eceaff;--mut:#9b97c4;--p:#a855f7;--b:#3b82f6;--c:#22d3ee;--ok:#34d399;--bad:#fb7185;--warn:#fbbf24;--grad:linear-gradient(135deg,#a855f7,#3b82f6 55%,#22d3ee);--glow:0 0 24px rgba(168,85,247,.35);--paper:#fff}
+[data-theme=light]{--bg:#f3f1ff;--bg2:#e9e5ff;--card:rgba(255,255,255,.72);--card2:rgba(255,255,255,.95);--bd:rgba(90,60,200,.16);--tx:#1b1740;--mut:#625e8a;--glow:0 6px 24px rgba(120,80,220,.18)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(600px 400px at 10% 0%,rgba(168,85,247,.22),transparent 60%),radial-gradient(700px 500px at 100% 20%,rgba(59,130,246,.18),transparent 60%),radial-gradient(600px 400px at 40% 100%,rgba(34,211,238,.12),transparent 60%)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;padding:18px 14px;border-right:1px solid var(--bd);background:var(--card);backdrop-filter:blur(18px);display:flex;flex-direction:column;gap:6px;z-index:30}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;padding:6px 10px 16px}
+.logo i{width:34px;height:34px;border-radius:10px;background:var(--grad);display:grid;place-items:center;box-shadow:var(--glow);font-style:normal;font-size:18px}
+.logo b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{display:flex;flex-direction:column;gap:3px}
+nav button{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid transparent;border-radius:12px;background:none;color:var(--mut);text-align:left;font-weight:600;transition:.2s}
+nav button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+nav button:hover{color:var(--tx);background:var(--card2)}
+nav button.on{color:var(--tx);background:linear-gradient(90deg,rgba(168,85,247,.28),rgba(59,130,246,.14));border-color:rgba(168,85,247,.45);box-shadow:var(--glow)}
+.aside-foot{margin-top:auto;font-size:12px;color:var(--mut);padding:10px;border:1px dashed var(--bd);border-radius:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:700;border:1px solid var(--bd);background:var(--card)}
+.pill.demo{color:var(--warn);border-color:rgba(251,191,36,.4)}.pill.live{color:var(--ok);border-color:rgba(52,211,153,.4)}
+.main{min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:12px 24px;backdrop-filter:blur(16px);background:color-mix(in srgb,var(--bg) 70%,transparent);border-bottom:1px solid var(--bd)}
+.top h1{font-size:18px;flex:1}
+.burger{display:none}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--bd);background:var(--card);display:grid;place-items:center;font-size:18px;transition:.2s}
+.icon-btn:hover{box-shadow:var(--glow);border-color:var(--p)}
+.avatar{width:40px;height:40px;border-radius:50%;border:2px solid var(--p);background:var(--grad);font-weight:800;color:#fff;box-shadow:var(--glow)}
+.menu{position:absolute;right:24px;top:58px;width:220px;padding:8px;border-radius:14px;background:var(--bg2);border:1px solid var(--bd);box-shadow:0 20px 50px rgba(0,0,0,.4);display:none}
+.menu.open{display:block}.menu button{display:block;width:100%;text-align:left;padding:9px 10px;border:0;background:none;border-radius:8px}.menu button:hover{background:var(--card2)}.menu .who{padding:8px 10px;border-bottom:1px solid var(--bd);margin-bottom:6px}
+.content{padding:24px;max-width:1200px;width:100%;margin:0 auto}
+.page{display:none;animation:in .35s ease}.page.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px;backdrop-filter:blur(14px);position:relative}
+.card.glow:hover{border-color:rgba(168,85,247,.55);box-shadow:var(--glow)}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(5,1fr)}
+h2{font-size:22px}h3{font-size:16px;margin-bottom:10px}
+.sub{color:var(--mut);font-size:14px}
+.hero{padding:26px;border-radius:22px;background:linear-gradient(120deg,rgba(168,85,247,.3),rgba(59,130,246,.22) 60%,rgba(34,211,238,.18));border:1px solid rgba(168,85,247,.4);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:var(--grad);filter:blur(70px);opacity:.45}
+.hero h2{font-size:28px;position:relative}.hero p{position:relative;margin-top:6px;color:var(--mut)}
+.quick{display:flex;flex-direction:column;gap:8px;text-align:left;padding:16px;border-radius:16px;border:1px solid var(--bd);background:var(--card);transition:.25s}
+.quick:hover{transform:translateY(-3px);border-color:var(--p);box-shadow:var(--glow)}
+.quick .em{font-size:26px}.quick b{font-size:15px}.quick span{font-size:12.5px;color:var(--mut)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:12px;border:1px solid var(--bd);background:var(--card2);font-weight:700;transition:.2s}
+.btn:hover{border-color:var(--p);box-shadow:var(--glow)}
+.btn.pri{background:var(--grad);border:0;color:#fff;box-shadow:var(--glow)}.btn.pri:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn.sm{padding:6px 12px;font-size:13px;border-radius:10px}.btn.danger:hover{border-color:var(--bad);box-shadow:0 0 18px rgba(251,113,133,.3)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+input,select,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--card);outline:none}
+select option{background:var(--bg2);color:var(--tx)}
+input:focus,select:focus,textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(168,85,247,.2)}
+label{font-size:12.5px;font-weight:700;color:var(--mut);display:block;margin-bottom:5px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{flex:1}
+.bar{height:9px;border-radius:99px;background:var(--card2);overflow:hidden}.bar i{display:block;height:100%;background:var(--grad);border-radius:99px;transition:width .5s}
+.stat b{font-size:28px;display:block;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}.stat span{font-size:13px;color:var(--mut)}
+.goal{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}.goal.done span{text-decoration:line-through;color:var(--mut)}.goal input{width:auto}
+.empty{text-align:center;padding:28px;color:var(--mut);border:1px dashed var(--bd);border-radius:14px}.empty .em{font-size:30px;display:block;margin-bottom:6px}
+.item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--card);margin-bottom:8px}.item .t{flex:1;min-width:0}.item .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.item .t small{color:var(--mut)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.tabs button{padding:7px 14px;border-radius:99px;border:1px solid var(--bd);background:var(--card);font-weight:600;font-size:13px}.tabs button.on{background:var(--grad);border-color:transparent;color:#fff}
+/* tutor */
+.tutor{display:grid;grid-template-columns:230px 1fr;gap:16px;height:calc(100vh - 130px);min-height:520px}
+.hist{overflow:auto;padding:12px}.hist .item{cursor:pointer;margin-bottom:6px;padding:8px 10px}.hist .item.on{border-color:var(--p)}
+.chat{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.msgs{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+.msg{max-width:84%;padding:12px 15px;border-radius:16px;line-height:1.55;font-size:14.5px;animation:in .25s}
+.msg.u{align-self:flex-end;background:var(--grad);color:#fff;border-bottom-right-radius:4px}
+.msg.a{align-self:flex-start;background:var(--card2);border:1px solid var(--bd);border-bottom-left-radius:4px}
+.msg.s{align-self:center;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);font-size:13px;max-width:92%}
+.msg h2,.msg h3,.msg h4{font-size:15px;margin:6px 0 4px}.msg ul,.paper ul{padding-left:20px;margin:4px 0}.msg p{margin:2px 0}.msg .sp{height:6px;flex:none}
+.tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.chip{padding:5px 11px;border-radius:99px;border:1px solid var(--bd);background:var(--card);font-size:12.5px}.chip:hover{border-color:var(--c);color:var(--c)}
+.composer{display:flex;gap:8px;padding:12px;border-top:1px solid var(--bd);align-items:flex-end}
+.composer textarea{resize:none;height:46px;max-height:140px}.composer select{width:auto}
+.mic.on{background:var(--bad);border-color:var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(251,113,133,.2)}}
+.typing{display:flex;gap:4px;padding:4px}.typing i{width:7px;height:7px;border-radius:50%;background:var(--c);animation:bl 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{50%{opacity:.2;transform:translateY(-3px)}}
+/* visual */
+.vis{display:grid;grid-template-columns:260px 1fr;gap:16px}
+.stage{background:#0e0c1d;border:1px solid var(--bd);border-radius:16px;overflow:auto;height:480px;display:grid;place-items:center;position:relative}
+.stage:fullscreen{height:100vh;border:0;border-radius:0}.stage .zoom{transform-origin:center;transition:transform .2s}.stage svg{display:block;max-width:none}
+.sliders{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0}
+input[type=range]{padding:0;accent-color:var(--p)}
+/* notes */
+.paper{background:var(--paper);color:#1b1740;border-radius:12px;padding:30px;max-height:70vh;overflow:auto;line-height:1.6}.paper h2{color:#4c1d95;margin:6px 0}.paper h3{color:#1d4ed8;border-bottom:1px solid #ddd;margin:14px 0 6px;padding-bottom:3px}.paper h4{margin:8px 0 2px}.paper .sp{height:8px}
+.checks{display:flex;flex-wrap:wrap;gap:8px}.checks label{display:flex;gap:6px;align-items:center;margin:0;padding:6px 10px;border:1px solid var(--bd);border-radius:99px;color:var(--tx);font-weight:600;cursor:pointer}.checks input{width:auto}
+#noteEditor{min-height:380px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.55}
+/* timer */
+.timer{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+.ringwrap{display:grid;place-items:center;position:relative;padding:10px}
+.ring{width:min(320px,78vw);transform:rotate(-90deg)}.ring circle{fill:none;stroke-width:12;stroke-linecap:round}.ring .bg{stroke:var(--card2)}.ring .fg{stroke:url(#rg);transition:stroke-dashoffset .4s linear;filter:drop-shadow(0 0 8px rgba(168,85,247,.7))}
+.ringtxt{position:absolute;text-align:center}.ringtxt b{font-size:clamp(38px,9vw,58px);font-variant-numeric:tabular-nums;display:block;letter-spacing:1px}.ringtxt span{color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:2px;font-size:12px}
+.hms{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bars{display:flex;gap:8px;align-items:flex-end;height:110px}.bars div{flex:1;text-align:center;font-size:11px;color:var(--mut);display:flex;flex-direction:column;justify-content:flex-end;height:100%}.bars i{display:block;background:var(--grad);border-radius:6px 6px 0 0;min-height:3px;margin-bottom:4px}
+#focusOverlay{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 40%,#1a1040,#05040c);display:none;flex-direction:column;align-items:center;justify-content:center;gap:24px;color:#eceaff}
+#focusOverlay.on{display:flex}#focusOverlay .big{font-size:clamp(70px,20vw,200px);font-weight:800;font-variant-numeric:tabular-nums;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* quiz */
+.opt{display:block;width:100%;text-align:left;padding:13px 16px;margin-bottom:10px;border-radius:14px;border:1px solid var(--bd);background:var(--card);font-weight:600;transition:.2s}
+.opt:hover:not(:disabled){border-color:var(--p);transform:translateX(4px)}.opt.ok{border-color:var(--ok);background:rgba(52,211,153,.15)}.opt.bad{border-color:var(--bad);background:rgba(251,113,133,.15)}
+.fc{perspective:900px;height:240px;cursor:pointer}.fc>div{position:relative;width:100%;height:100%;transition:transform .55s;transform-style:preserve-3d}.fc.flip>div{transform:rotateY(180deg)}.fc .f{position:absolute;inset:0;backface-visibility:hidden;display:grid;place-items:center;text-align:center;padding:24px;border-radius:18px;border:1px solid var(--p);background:var(--card2);font-size:18px;font-weight:600;box-shadow:var(--glow)}.fc .bk{transform:rotateY(180deg);font-size:15px}
+.score{font-size:64px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* modal & toast */
+.modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px}.modal.on{display:flex}
+.modal .box{background:var(--bg2);border:1px solid var(--bd);border-radius:20px;padding:20px;width:min(820px,100%);max-height:92vh;overflow:auto}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);opacity:0;background:var(--bg2);border:1px solid var(--p);padding:11px 18px;border-radius:12px;z-index:200;transition:.3s;box-shadow:var(--glow);max-width:90vw;pointer-events:none}#toast.on{opacity:1;transform:translateX(-50%)}
+pre.code{background:#05040c;color:#a5f3fc;padding:12px;border-radius:12px;overflow:auto;font-size:12.5px}
+.scrim{display:none}
+@media(max-width:1000px){.g4,.g5{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.timer,.vis{grid-template-columns:1fr}}
+@media(max-width:860px){.app{grid-template-columns:1fr}aside{position:fixed;left:0;top:0;width:260px;transform:translateX(-100%);transition:.3s;background:var(--bg2)}aside.open{transform:none}.scrim.on{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:25}.burger{display:grid}.top{padding:10px 14px}.content{padding:14px}.g2,.g3{grid-template-columns:1fr}.tutor{grid-template-columns:1fr;height:auto}.hist{display:none}.chat{height:calc(100vh - 150px)}.menu{right:14px}.msg{max-width:94%}.hero h2{font-size:22px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside id="side">
+  <div class="logo"><i>✦</i><span>School<b>Verse</b></span></div>
+  <nav id="nav" aria-label="Main navigation"></nav>
+  <div class="aside-foot"><div id="aiPill" class="pill demo">● Demo mode</div><div style="margin-top:8px">Sample content is clearly labelled. Connect a backend in Settings for real AI.</div></div>
+</aside>
+<div class="scrim" id="scrim"></div>
+<div class="main">
+  <header class="top">
+    <button class="icon-btn burger" id="burger" aria-label="Open menu">☰</button>
+    <h1 id="title">Home</h1>
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">🌙</button>
+    <button class="avatar" id="avatar" aria-label="Profile menu">S</button>
+    <div class="menu" id="menu"></div>
+  </header>
+  <main class="content">
+
+  <section class="page" id="p-home">
+    <div class="hero"><h2 id="welcome">Welcome</h2><p>Learn smarter in Hindi, Hinglish or English. Pick up where you left off.</p></div>
+    <h3 style="margin-top:22px">Quick access</h3>
+    <div class="grid g5" id="quick"></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><h3>Today's goals <span class="pill demo" title="Sample goals — edit freely">sample</span></h3>
+        <div class="bar"><i id="goalBar" style="width:0"></i></div><div class="sub" id="goalTxt" style="margin:6px 0 8px"></div><div id="goals"></div>
+        <form class="row" id="goalForm" style="margin-top:10px"><input id="goalIn" placeholder="Add a goal…" aria-label="New goal"><button class="btn sm pri">Add</button></form></div>
+      <div class="card"><h3>Your progress</h3><div class="grid g2">
+        <div class="stat"><b id="sFocus">0</b><span>focus min today</span></div><div class="stat"><b id="sQuiz">0</b><span>quizzes taken</span></div>
+        <div class="stat"><b id="sSaved">0</b><span>saved items</span></div><div class="stat"><b id="sChat">0</b><span>AI chats</span></div></div></div>
+      <div class="card"><h3>Recently viewed &amp; saved</h3><div id="recent"></div></div>
+    </div>
+  </section>
+
+  <section class="page" id="p-tutor">
+    <div class="tutor">
+      <div class="card hist"><button class="btn pri sm" id="newChat" style="width:100%;margin-bottom:10px">+ New chat</button><div id="chatList"></div></div>
+      <div class="card chat">
+        <div class="msgs" id="msgs" aria-live="polite"></div>
+        <div class="composer">
+          <button class="icon-btn mic" id="mic" title="Voice question" aria-label="Voice input">🎤</button>
+          <select id="voiceLang" aria-label="Voice language" style="width:92px"><option value="en-IN">English</option><option value="hi-IN">हिन्दी</option></select>
+          <textarea id="chatIn" rows="1" placeholder="Ask anything — Hindi, Hinglish or English…" aria-label="Your question"></textarea>
+          <button class="btn pri" id="sendBtn">Send ➤</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="p-visual">
+    <div class="vis">
+      <div class="card"><h3>Diagrams</h3><div id="dList"></div></div>
+      <div class="card">
+        <div class="row" style="margin-bottom:10px"><div><h3 id="dTitle" style="margin:0"></h3><div class="sub" id="dDesc"></div></div><div class="sp"></div>
+          <button class="btn sm" id="zOut" aria-label="Zoom out">−</button><button class="btn sm" id="zReset">100%</button><button class="btn sm" id="zIn" aria-label="Zoom in">+</button>
+          <button class="btn sm" id="dFull">⛶ Fullscreen</button></div>
+        <div id="dCtl"></div>
+        <div class="stage" id="stage"><div class="zoom" id="zoom"></div></div>
+        <div class="row" style="margin-top:12px"><button class="btn pri" id="dPng">⬇ Download PNG</button><button class="btn" id="dSvg">⬇ SVG</button><button class="btn" id="dSave">💾 Save to library</button><span class="pill demo">Built-in SVG diagrams (no AI needed)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="p-notes">
+    <div class="grid g2" style="grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr)">
+      <div class="card"><h3>Generate notes</h3>
+        <div class="grid g2" style="gap:10px"><div><label for="nSub">Subject</label><select id="nSub"></select></div><div><label for="nTopic">Chapter / topic</label><input id="nTopic" list="topics" placeholder="e.g. Photosynthesis" ><datalist id="topics"><option>Photosynthesis<option>Newton's Laws of Motion<option>Pythagoras Theorem</datalist></div></div>
+        <label for="nText" style="margin-top:10px">Or paste text</label><textarea id="nText" rows="5" placeholder="Paste a paragraph from your textbook…"></textarea>
+        <label style="margin-top:10px">Include</label><div class="checks" id="nChecks"></div>
+        <div class="row" style="margin-top:14px"><button class="btn pri" id="nGen">✨ Generate</button><span class="sub" id="nNote"></span></div></div>
+      <div class="card"><div class="row"><h3 style="margin:0">Editor</h3><span id="nBadge"></span><div class="sp"></div>
+        <button class="btn sm" id="nCopy">Copy</button><button class="btn sm" id="nRegen">↻ Regenerate</button><button class="btn sm" id="nSave">💾 Save</button><button class="btn sm pri" id="nPrev">Preview &amp; export</button></div>
+        <textarea id="noteEditor" style="margin-top:12px" placeholder="Your notes appear here. You can edit them freely. Use # headings and - bullets."></textarea></div>
+    </div>
+  </section>
+
+  <section class="page" id="p-focus">
+    <div class="timer">
+      <div class="card"><div class="tabs" id="presets"></div>
+        <div class="ringwrap"><svg class="ring" viewBox="0 0 220 220"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a855f7"/><stop offset=".5" stop-color="#3b82f6"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs><circle class="bg" cx="110" cy="110" r="92"/><circle class="fg" id="ringFg" cx="110" cy="110" r="92" stroke-dasharray="578.05" stroke-dashoffset="0"/></svg>
+          <div class="ringtxt"><b id="tClock">25:00</b><span id="tMode">Focus</span></div></div>
+        <div class="row" style="justify-content:center"><button class="btn pri" id="tStart">▶ Start</button><button class="btn" id="tReset">↺ Reset</button><button class="btn" id="tFull">⛶ Focus mode</button></div></div>
+      <div class="grid">
+        <div class="card"><h3>Custom time</h3><div class="hms"><div><label for="hIn">Hours</label><input id="hIn" type="number" min="0" max="23" value="0"></div><div><label for="mIn">Minutes</label><input id="mIn" type="number" min="0" max="59" value="25"></div><div><label for="sIn">Seconds</label><input id="sIn" type="number" min="0" max="59" value="0"></div></div>
+          <button class="btn sm" id="tSet" style="margin-top:10px">Set custom time</button>
+          <h3 style="margin-top:16px">Pomodoro custom</h3><div class="grid g2" style="gap:10px"><div><label for="fMin">Focus (min)</label><input id="fMin" type="number" min="1" value="25"></div><div><label for="bMin">Break (min)</label><input id="bMin" type="number" min="1" value="5"></div></div>
+          <label class="row" style="margin-top:10px;color:var(--tx)"><input type="checkbox" id="autoSw" checked style="width:auto"> Auto-switch focus ⇄ break</label></div>
+        <div class="card"><h3>Focus statistics</h3><div class="grid g2"><div class="stat"><b id="tdMin">0</b><span>minutes today</span></div><div class="stat"><b id="tdSes">0</b><span>sessions today</span></div></div><div class="bars" id="wk" style="margin-top:14px"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="p-quiz"><div id="quizBox"></div></section>
+
+  <section class="page" id="p-library">
+    <div class="row" style="margin-bottom:12px"><div class="tabs" id="libTabs" style="margin:0"></div><div class="sp"></div><input id="libSearch" placeholder="🔍 Search saved content…" style="max-width:300px" aria-label="Search library"></div>
+    <div id="libList"></div>
+  </section>
+
+  <section class="page" id="p-settings">
+    <div class="grid g2">
+      <div class="card"><h3>Profile &amp; preferences</h3>
+        <label for="setName">Your name</label><input id="setName"><label for="setClass" style="margin-top:10px">Class</label><select id="setClass"></select>
+        <label for="setRate" style="margin-top:10px">Speaking speed: <span id="rateV"></span>×</label><input type="range" id="setRate" min=".6" max="1.4" step=".1">
+        <div class="row" style="margin-top:14px"><button class="btn" id="setTheme">Toggle theme</button><button class="btn danger" id="setReset">Reset all data</button></div></div>
+      <div class="card"><h3>AI backend setup</h3><div class="sub" id="aiStat" style="margin-bottom:10px"></div>
+        <label for="setBackend">Backend URL (optional)</label><input id="setBackend" placeholder="Leave empty to auto-detect /api/chat">
+        <div class="row" style="margin-top:10px"><button class="btn pri sm" id="setSave">Save &amp; test</button></div>
+        <p class="sub" style="margin-top:12px">API keys must live on the server — never in this page. Run <code>server.js</code> (included) with <code>ANTHROPIC_API_KEY</code> set, then open <code>http://localhost:3000</code>; the page connects automatically.</p></div>
+    </div>
+  </section>
+  </main>
+</div>
+</div>
+
+<div id="focusOverlay"><div class="sub" id="foMode" style="letter-spacing:4px;text-transform:uppercase"></div><div class="big" id="foClock"></div><div class="row"><button class="btn pri" id="foToggle">⏸ Pause</button><button class="btn" id="foExit">✕ Exit focus mode</button></div></div>
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+<div id="toast" role="status"></div>
+
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('sv_'+k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem('sv_'+k,JSON.stringify(v))}catch{toast('Browser storage is full or blocked.')}}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const dkey=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3200)}
+function dl(name,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+function md(t){const out=[];let inl=false;for(const raw of esc(t).split('\n')){const l=raw.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');if(/^- /.test(l)){if(!inl){out.push('<ul>');inl=true}out.push('<li>'+l.slice(2)+'</li>');continue}if(inl){out.push('</ul>');inl=false}if(/^### /.test(l))out.push('<h4>'+l.slice(4)+'</h4>');else if(/^## /.test(l))out.push('<h3>'+l.slice(3)+'</h3>');else if(/^# /.test(l))out.push('<h2>'+l.slice(2)+'</h2>');else if(!l.trim())out.push('<div class="sp"></div>');else out.push('<p>'+l+'</p>')}if(inl)out.push('</ul>');return out.join('')}
+function openModal(html){$('#modalBox').innerHTML=html;$('#modal').classList.add('on')}
+function closeModal(){$('#modal').classList.remove('on');$('#modalBox').innerHTML=''}
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+/* ---------- state ---------- */
+let settings=Object.assign({name:'Student',cls:'9',rate:1,theme:'dark',backend:''},store.get('settings',{}));
+const saveSettings=()=>store.set('settings',settings);
+let backend='';
+function setTheme(t){settings.theme=t;document.documentElement.dataset.theme=t;$('#themeBtn').textContent=t==='dark'?'🌙':'☀️';saveSettings()}
+async function detectBackend(){backend='';const cands=settings.backend?[settings.backend]:(location.protocol.startsWith('http')?['/api/chat']:[]);for(const u of cands){try{const r=await fetch(u.replace(/\/chat$/,'/health'),{cache:'no-store'});if(r.ok){backend=u;break}}catch{}}
+  const p=$('#aiPill');p.className='pill '+(backend?'live':'demo');p.textContent=backend?'● AI connected':'● Demo mode';
+  $('#aiStat').textContent=backend?'Connected to '+backend+'. Real AI is active for Tutor, Notes and Quiz.':'Not connected. The app is running in demo mode: the tutor knows a few sample topics, notes use sample templates.'}
+async function callAI(payload){if(!backend)throw new Error('NO_BACKEND');const r=await fetch(backend,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!r.ok)throw new Error('Server error '+r.status+': '+(await r.text()).slice(0,200));const j=await r.json();if(j.error)throw new Error(j.error);return j.reply}
+const SETUP_MSG='**AI backend not connected.** Start the included `server.js` with your API key (see Settings → AI backend setup) to get real answers.';
+
+/* ---------- library ---------- */
+const lib=()=>store.get('lib',[]);
+function addLib(it){const l=lib();l.unshift(Object.assign({id:uid(),ts:Date.now()},it));store.set('lib',l);toast('Saved to My Library');return l[0]}
+const viewed=()=>store.get('viewed',[]);
+function markViewed(t){const v=viewed().filter(x=>x!==t);v.unshift(t);store.set('viewed',v.slice(0,6))}
+
+/* ---------- nav ---------- */
+const IC={home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',tutor:'<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-5.4A8 8 0 1 1 21 12z"/><path d="M9 11h6M9 14h3"/>',visual:'<circle cx="7" cy="7" r="4"/><rect x="13" y="13" width="8" height="8" rx="1"/><path d="M17 3l4 7h-8z"/>',notes:'<path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7"/>',focus:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',quiz:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/>',library:'<path d="M4 4h4v16H4zM10 4h4v16h-4z"/><path d="M16 6l4-1 3 14-4 1z"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>'};
+const PAGES=[['home','Home'],['tutor','AI Tutor'],['visual','Visual Learning'],['notes','Notes Studio'],['focus','Focus Room'],['quiz','Quiz Arena'],['library','My Library'],['settings','Settings']];
+$('#nav').innerHTML=PAGES.map(([id,n])=>`<button data-go="${id}"><svg viewBox="0 0 24 24" aria-hidden="true">${IC[id]}</svg>${n}</button>`).join('');
+const INIT={};
+function go(id,push=true){if(!PAGES.some(p=>p[0]===id))id='home';$$('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+id));$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===id));$('#title').textContent=PAGES.find(p=>p[0]===id)[1];if(push&&location.hash!=='#'+id)history.replaceState(null,'','#'+id);closeSide();$('#menu').classList.remove('open');INIT[id]&&INIT[id]();scrollTo(0,0)}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)go(g.dataset.go)});
+const openSide=()=>{$('#side').classList.add('open');$('#scrim').classList.add('on')},closeSide=()=>{$('#side').classList.remove('open');$('#scrim').classList.remove('on')};
+$('#burger').onclick=openSide;$('#scrim').onclick=closeSide;
+$('#themeBtn').onclick=()=>setTheme(settings.theme==='dark'?'light':'dark');
+$('#avatar').onclick=e=>{e.stopPropagation();$('#menu').classList.toggle('open')};
+document.addEventListener('click',e=>{if(!e.target.closest('#menu'))$('#menu').classList.remove('open')});
+function renderMenu(){$('#avatar').textContent=(settings.name||'S')[0].toUpperCase();$('#menu').innerHTML=`<div class="who"><b>${esc(settings.name)}</b><div class="sub">Class ${esc(settings.cls)}</div></div><button data-go="settings">⚙ Settings</button><button data-go="library">📚 My Library</button><button id="mTheme">🌓 Toggle theme</button>`;$('#mTheme').onclick=()=>setTheme(settings.theme==='dark'?'light':'dark')}
+
+/* ---------- home ---------- */
+const QUICK=[['tutor','🤖','AI Tutor','Ask any doubt'],['notes','📝','Notes Studio','Make revision notes'],['focus','⏱️','Focus Timer','Pomodoro & more'],['quiz','🏆','Quiz Arena','Test yourself'],['library','📚','My Library','Saved items']];
+$('#quick').innerHTML=QUICK.map(q=>`<button class="quick" data-go="${q[0]}"><span class="em">${q[1]}</span><b>${q[2]}</b><span>${q[3]}</span></button>`).join('');
+const defGoals=[{t:'Revise Photosynthesis notes',d:false},{t:'Solve 10 quadratic equations',d:false},{t:'Complete one 25-min focus session',d:false}];
+const goals=()=>{const g=store.get('goals:'+dkey(),null);return g||defGoals};
+function renderGoals(){const g=goals();$('#goals').innerHTML=g.length?g.map((x,i)=>`<div class="goal ${x.d?'done':''}"><input type="checkbox" ${x.d?'checked':''} data-gi="${i}" aria-label="Done"><span class="sp">${esc(x.t)}</span><button class="icon-btn" style="width:30px;height:30px;font-size:13px" data-gd="${i}" aria-label="Delete goal">✕</button></div>`).join(''):'<div class="empty">No goals yet. Add one below.</div>';const n=g.filter(x=>x.d).length;$('#goalBar').style.width=g.length?n/g.length*100+'%':'0';$('#goalTxt').textContent=`${n} of ${g.length} done`}
+$('#goals').addEventListener('click',e=>{const g=goals();if(e.target.dataset.gd!=null){g.splice(+e.target.dataset.gd,1);store.set('goals:'+dkey(),g);renderGoals()}});
+$('#goals').addEventListener('change',e=>{if(e.target.dataset.gi!=null){const g=goals();g[+e.target.dataset.gi].d=e.target.checked;store.set('goals:'+dkey(),g);renderGoals()}});
+$('#goalForm').onsubmit=e=>{e.preventDefault();const v=$('#goalIn').value.trim();if(!v)return;const g=goals();g.push({t:v,d:false});store.set('goals:'+dkey(),g);$('#goalIn').value='';renderGoals()};
+INIT.home=()=>{$('#welcome').textContent=`Welcome back, ${settings.name} 👋`;renderGoals();const st=store.get('focus',{})[dkey()]||{sec:0};$('#sFocus').textContent=Math.round(st.sec/60);$('#sQuiz').textContent=store.get('quizzes',[]).length;$('#sSaved').textContent=lib().length;$('#sChat').textContent=store.get('chats',[]).length;
+  const r=[...viewed().map(t=>`<div class="item"><span>🕘</span><div class="t"><b>${esc(t)}</b><small>Recently viewed</small></div></div>`),...lib().slice(0,3).map(i=>`<div class="item" data-go="library" style="cursor:pointer"><span>${ICON_T[i.type]||'📄'}</span><div class="t"><b>${esc(i.title)}</b><small>Saved ${i.type}</small></div></div>`)];
+  $('#recent').innerHTML=r.length?r.slice(0,6).join(''):'<div class="empty"><span class="em">🌱</span>Nothing yet — try the AI Tutor or a diagram.</div>'};
+const ICON_T={note:'📝',diagram:'🧩',answer:'💬'};
+
+/* ---------- tutor ---------- */
+const KB=[
+{k:['photosynthesis','prakash sanshleshan','प्रकाश संश्लेषण'],d:'photo',f:['Explain Newton\'s laws','What is the water cycle?'],a:`## Photosynthesis
+Plants make their own food using sunlight — like a tiny solar-powered kitchen inside every leaf.
+**Equation:** 6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂
+### Steps
+- Chlorophyll in the chloroplasts absorbs sunlight.
+- Leaves take in CO₂ through stomata; roots supply water.
+- Light energy turns them into glucose (food) and releases oxygen.
+**हिंदी में:** प्रकाश संश्लेषण में पौधे सूर्य के प्रकाश, जल और कार्बन डाइऑक्साइड से अपना भोजन (ग्लूकोज) बनाते हैं और ऑक्सीजन छोड़ते हैं.`},
+{k:['pythagoras','pythagorean','hypotenuse','पाइथागोरस'],d:'tri',f:['Solve a quadratic equation','Explain photosynthesis'],a:`## Pythagoras Theorem
+In a **right-angled triangle**, the square of the hypotenuse equals the sum of squares of the other two sides.
+**Formula:** a² + b² = c²  (c is the side opposite the right angle)
+### Example
+- Sides 3 and 4 → c² = 9 + 16 = 25 → c = 5.
+- Check: 3-4-5 is a famous "Pythagorean triple".
+**Hinglish tip:** Sabse lambi side (hypotenuse) hamesha 90° ke saamne hoti hai.`},
+{k:['newton','laws of motion','force','gati ke niyam'],d:'newton',f:['What is the water cycle?','Explain Pythagoras theorem'],a:`## Newton's Laws of Motion
+### 1st law (Inertia)
+- An object stays at rest or in uniform motion unless a net force acts on it. Example: you lurch forward when a bus brakes.
+### 2nd law
+- **F = m × a.** Same force on a lighter object gives larger acceleration. Example: 10 N on 2 kg → a = 5 m/s².
+### 3rd law
+- Every action has an equal and opposite reaction. Example: a rocket pushes gas down, gas pushes rocket up.`},
+{k:['quadratic','x²','x^2','discriminant'],d:'quad',f:['Explain Pythagoras theorem','Explain photosynthesis'],a:`## Quadratic Equations
+A quadratic has the form **ax² + bx + c = 0** (a ≠ 0).
+**Quadratic formula:** x = (−b ± √(b² − 4ac)) / 2a
+### Discriminant D = b² − 4ac
+- D > 0 → two different real roots; D = 0 → one repeated root; D < 0 → no real roots.
+### Example
+- x² − 5x + 6 = 0 → D = 25 − 24 = 1 → x = (5 ± 1)/2 → **x = 3 or 2**.`},
+{k:['water cycle','evaporation','condensation','jal chakra'],d:'water',f:['Explain the plant cell','Explain Newton\'s laws'],a:`## The Water Cycle
+Water keeps travelling between the sea, sky and land.
+### Stages
+- **Evaporation:** the Sun heats water, which rises as vapour.
+- **Condensation:** vapour cools and forms clouds.
+- **Precipitation:** water falls as rain, snow or hail.
+- **Collection:** it flows into rivers, lakes and oceans, and the cycle repeats.`},
+{k:['plant cell','cell','chloroplast','nucleus','mitochondria'],d:'cell',f:['Explain photosynthesis','What is the water cycle?'],a:`## The Plant Cell
+Plant cells have a few parts animal cells lack.
+### Key parts
+- **Cell wall:** a rigid outer layer for support.
+- **Chloroplasts:** make food by photosynthesis.
+- **Large vacuole:** stores water and keeps the cell firm.
+- **Nucleus:** controls the cell. **Mitochondria:** release energy.`}];
+const DIAG_NAMES={photo:'Photosynthesis flowchart',tri:'Pythagoras triangle',newton:'Newton\'s laws concept map',quad:'Quadratic graph',water:'Water cycle',cell:'Plant cell'};
+let chats=store.get('chats',[]),cur=null,spoken='';
+function newChat(){cur={id:uid(),title:'New chat',ts:Date.now(),msgs:[]};renderChat()}
+function saveChat(){if(!cur.msgs.some(m=>m.r==='u'))return;const i=chats.findIndex(c=>c.id===cur.id);if(i<0)chats.unshift(cur);else chats[i]=cur;store.set('chats',chats);renderChatList()}
+function renderChatList(){$('#chatList').innerHTML=chats.length?chats.map(c=>`<div class="item ${cur&&c.id===cur.id?'on':''}" data-c="${c.id}"><div class="t"><b>${esc(c.title)}</b><small>${new Date(c.ts).toLocaleDateString()}</small></div></div>`).join(''):'<div class="sub">Your conversations will appear here.</div>'}
+$('#chatList').addEventListener('click',e=>{const it=e.target.closest('[data-c]');if(it){cur=chats.find(c=>c.id===it.dataset.c);renderChat()}});
+function msgHTML(m,i){if(m.r==='u')return `<div class="msg u">${esc(m.t)}</div>`;if(m.r==='s')return `<div class="msg s">${md(m.t)}</div>`;
+  const dm=m.demo?'<span class="pill demo" title="Pre-written sample answer">DEMO answer — not live AI</span>':'';
+  const fu=(m.f||[]).map(f=>`<button class="chip" data-ask="${esc(f)}">${esc(f)}</button>`).join('');
+  return `<div class="msg a" data-i="${i}">${dm}${md(m.t)}<div class="tools"><button class="chip" data-act="play">▶ Listen</button><button class="chip" data-act="pause">⏸</button><button class="chip" data-act="replay">↻ Replay</button><button class="chip" data-act="save">💾 Save</button>${m.d?`<button class="chip" data-act="diag" data-d="${m.d}">🧩 ${esc(DIAG_NAMES[m.d])}</button>`:''}</div>${fu?`<div class="tools"><span class="sub">Follow-up:</span>${fu}</div>`:''}</div>`}
+function renderChat(){const m=$('#msgs');if(!cur.msgs.length)m.innerHTML=`<div class="msg a"><b>Namaste ${esc(settings.name)}! 👋</b><br>Ask me any school question from Class 6–12 — in Hindi, Hinglish or English. You can also tap 🎤 to speak.<div class="tools">${['Explain photosynthesis','Pythagoras theorem','Newton\'s laws','Quadratic equations'].map(f=>`<button class="chip" data-ask="${f}">${f}</button>`).join('')}</div><div class="sub" style="margin-top:8px">${backend?'Real AI is connected.':'⚠ Demo mode: only a few sample topics are answered. Connect the backend in Settings for real AI.'}</div></div>`;else{m.innerHTML=cur.msgs.map(msgHTML).join('');}m.scrollTop=m.scrollHeight;renderChatList()}
+async function ask(text){text=text.trim();if(!text)return;if(!cur)newChat();speechSynthesis&&speechSynthesis.cancel();cur.msgs.push({r:'u',t:text});if(cur.title==='New chat')cur.title=text.slice(0,40);markViewed('Tutor: '+text.slice(0,32));renderChat();
+  const box=$('#msgs');box.insertAdjacentHTML('beforeend','<div class="msg a" id="typing"><div class="typing"><i></i><i></i><i></i></div></div>');box.scrollTop=box.scrollHeight;$('#sendBtn').disabled=true;
+  try{let m;if(backend){const reply=await callAI({task:'tutor',messages:cur.msgs.filter(x=>x.r!=='s').map(x=>({role:x.r==='u'?'user':'assistant',content:x.t})).slice(-12),grade:settings.cls});m={r:'a',t:reply}}
+    else{await new Promise(r=>setTimeout(r,500));const q=text.toLowerCase();const hit=KB.find(e=>e.k.some(k=>q.includes(k)));m=hit?{r:'a',t:hit.a,demo:true,d:hit.d,f:hit.f}:{r:'a',demo:true,t:`I don't have a built-in sample answer for that.\n${SETUP_MSG}\n### Sample topics I can show\n- Photosynthesis, Pythagoras, Newton's laws, quadratic equations, water cycle, plant cell.`,f:['Explain photosynthesis','Pythagoras theorem']}}
+    cur.msgs.push(m)}catch(e){cur.msgs.push({r:'s',t:e.message==='NO_BACKEND'?SETUP_MSG:'**Could not reach the AI backend.** '+e.message})}
+  $('#sendBtn').disabled=false;saveChat();renderChat()}
+$('#sendBtn').onclick=()=>{const v=$('#chatIn').value;$('#chatIn').value='';ask(v)};
+$('#chatIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#sendBtn').click()}});
+$('#newChat').onclick=newChat;
+$('#msgs').addEventListener('click',e=>{const a=e.target.closest('[data-ask]');if(a)return ask(a.dataset.ask);const b=e.target.closest('[data-act]');if(!b)return;const m=cur.msgs[+b.closest('.msg').dataset.i];
+  if(b.dataset.act==='diag'){openDiagram(b.dataset.d);return}
+  if(b.dataset.act==='save'){addLib({type:'answer',title:(cur.msgs[+b.closest('.msg').dataset.i-1]||{}).t?.slice(0,50)||'Saved answer',content:m.t});return}
+  if(!('speechSynthesis' in window))return toast('Spoken answers are not supported in this browser.');
+  if(b.dataset.act==='pause')return speechSynthesis.pause();
+  if(b.dataset.act==='play'&&speechSynthesis.paused&&spoken===m.t)return speechSynthesis.resume();
+  speechSynthesis.cancel();spoken=m.t;const clean=m.t.replace(/[*#`]/g,'').replace(/[\u2080-\u2089²]/g,'');const u=new SpeechSynthesisUtterance(clean);u.lang=/[\u0900-\u097F]/.test(clean)?'hi-IN':'en-IN';u.rate=settings.rate;speechSynthesis.speak(u)});
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+$('#mic').onclick=()=>{if(!SR){cur||newChat();cur.msgs.push({r:'s',t:'**Voice input is not supported in this browser.** Please use Chrome, Edge or Safari, or type your question.'});return renderChat()}
+  if(rec){rec.stop();return}try{rec=new SR();rec.lang=$('#voiceLang').value;rec.interimResults=true;rec.onresult=e=>{$('#chatIn').value=[...e.results].map(r=>r[0].transcript).join('')};rec.onend=()=>{$('#mic').classList.remove('on');rec=null;if($('#chatIn').value.trim())$('#chatIn').focus()};rec.onerror=e=>{toast(e.error==='not-allowed'?'Microphone blocked. Allow mic access (works on https:// or localhost).':'Voice error: '+e.error)};rec.start();$('#mic').classList.add('on')}catch(e){toast('Could not start voice input.');rec=null}};
+INIT.tutor=()=>{if(!cur)(chats[0]&&false)||newChat();else renderChat()};
+
+/* ---------- diagrams ---------- */
+const T='font-family="Arial,sans-serif"',W='#eceaff';
+const svgWrap=(w,h,inner)=>`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" ${T}><rect width="${w}" height="${h}" fill="#0e0c1d"/>${inner}</svg>`;
+const arrowDef='<defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#22d3ee"/></marker></defs>';
+const box=(x,y,w,h,t,c='#a855f7',sub='')=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="${c}" fill-opacity=".18" stroke="${c}" stroke-width="2"/><text x="${x+w/2}" y="${y+h/2+(sub?-2:5)}" fill="${W}" font-size="15" font-weight="700" text-anchor="middle">${t}</text>${sub?`<text x="${x+w/2}" y="${y+h/2+16}" fill="#9b97c4" font-size="12" text-anchor="middle">${sub}</text>`:''}`;
+const ln=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#22d3ee" stroke-width="2.5" marker-end="url(#ar)"/>`;
+const DIAGS=[
+{id:'photo',t:'Photosynthesis flowchart',s:'Biology',d:'Inputs → chloroplast → outputs.',svg:()=>svgWrap(760,420,arrowDef+`<text x="380" y="40" fill="${W}" font-size="22" font-weight="800" text-anchor="middle">Photosynthesis</text>`+box(40,90,170,60,'Sunlight','#fbbf24')+box(40,180,170,60,'Carbon dioxide','#22d3ee','CO₂ from air')+box(40,270,170,60,'Water','#3b82f6','H₂O from roots')+ln(210,120,300,190)+ln(210,210,300,210)+ln(210,300,300,230)+box(300,160,170,100,'Chloroplast','#34d399','chlorophyll')+ln(470,195,550,130)+ln(470,225,550,290)+box(550,100,170,60,'Glucose','#a855f7','C₆H₁₂O₆ (food)')+box(550,260,170,60,'Oxygen','#fb7185','O₂ released')+`<text x="380" y="385" fill="#9b97c4" font-size="15" text-anchor="middle">6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂</text>`)},
+{id:'water',t:'Water cycle',s:'Geography',d:'Evaporation, condensation, precipitation, collection.',svg:()=>svgWrap(760,440,arrowDef+`<circle cx="650" cy="70" r="36" fill="#fbbf24"/><text x="650" y="125" fill="${W}" font-size="13" text-anchor="middle">Sun</text><ellipse cx="360" cy="90" rx="90" ry="38" fill="#cbd5e1"/><ellipse cx="310" cy="105" rx="60" ry="30" fill="#e2e8f0"/><ellipse cx="420" cy="105" rx="60" ry="30" fill="#e2e8f0"/><text x="360" y="100" fill="#0e0c1d" font-size="14" font-weight="700" text-anchor="middle">Cloud</text><polygon points="470,360 580,190 690,360" fill="#475569"/><polygon points="548,235 580,190 612,235" fill="#f1f5f9"/><rect x="0" y="330" width="500" height="110" fill="#1d4ed8" fill-opacity=".55"/><text x="120" y="400" fill="${W}" font-size="15" font-weight="700">Ocean / lake</text><rect x="500" y="360" width="260" height="80" fill="#166534" fill-opacity=".6"/>`+[0,1,2,3].map(i=>`<line x1="${300+i*30}" y1="150" x2="${290+i*30}" y2="190" stroke="#22d3ee" stroke-width="3" stroke-dasharray="4 5"/>`).join('')+`<path d="M130 320 C130 250 200 180 280 130" fill="none" stroke="#fbbf24" stroke-width="3" marker-end="url(#ar)"/><text x="60" y="260" fill="#fbbf24" font-size="15" font-weight="700">1. Evaporation</text><text x="430" y="55" fill="${W}" font-size="15" font-weight="700">2. Condensation</text><text x="150" y="190" fill="#22d3ee" font-size="15" font-weight="700">3. Precipitation</text><path d="M560 300 C520 340 480 350 440 365" fill="none" stroke="#22d3ee" stroke-width="3" marker-end="url(#ar)"/><text x="530" y="330" fill="#22d3ee" font-size="15" font-weight="700">4. Runoff &amp; collection</text>`)},
+{id:'cell',t:'Plant cell',s:'Biology',d:'Labelled parts of a plant cell.',svg:()=>{const L=(x,y,tx,ty,t)=>`<line x1="${x}" y1="${y}" x2="${tx}" y2="${ty}" stroke="#9b97c4" stroke-width="1.5"/><circle cx="${x}" cy="${y}" r="3.5" fill="#22d3ee"/><text x="${tx+(tx>380?8:-8)}" y="${ty+5}" fill="${W}" font-size="14" font-weight="700" text-anchor="${tx>380?'start':'end'}">${t}</text>`;return svgWrap(760,440,`<rect x="150" y="50" width="460" height="340" rx="40" fill="#166534" fill-opacity=".25" stroke="#34d399" stroke-width="7"/><rect x="164" y="64" width="432" height="312" rx="30" fill="#0e0c1d" stroke="#a855f7" stroke-width="2"/><ellipse cx="400" cy="235" rx="150" ry="85" fill="#3b82f6" fill-opacity=".22" stroke="#3b82f6" stroke-width="2"/><circle cx="250" cy="130" r="38" fill="#a855f7" fill-opacity=".5" stroke="#a855f7" stroke-width="2"/><circle cx="250" cy="130" r="12" fill="#a855f7"/><ellipse cx="520" cy="130" rx="34" ry="18" fill="#34d399" fill-opacity=".6" stroke="#34d399" stroke-width="2"/><ellipse cx="540" cy="330" rx="34" ry="18" fill="#34d399" fill-opacity=".6" stroke="#34d399" stroke-width="2"/><ellipse cx="250" cy="330" rx="30" ry="14" fill="#fb7185" fill-opacity=".6" stroke="#fb7185" stroke-width="2"/>`+L(154,200,70,200,'Cell wall')+L(168,250,70,260,'Cell membrane')+L(250,130,70,110,'Nucleus')+L(520,130,690,90,'Chloroplast')+L(540,330,690,360,'Chloroplast')+L(250,330,70,380,'Mitochondrion')+L(400,235,690,235,'Large vacuole')+`<text x="380" y="30" fill="${W}" font-size="20" font-weight="800" text-anchor="middle">Plant cell</text>`)}},
+{id:'quad',t:'Quadratic graph y = ax² + bx + c',s:'Mathematics',d:'Drag sliders to see how a, b and c change the parabola.',params:{a:1,b:-5,c:6},svg:p=>{const W_=720,H=460,sx=40,sy=17,ox=W_/2,oy=H/2;const X=x=>ox+x*sx,Y=y=>oy-y*sy;let g='';for(let i=-8;i<=8;i++)g+=`<line x1="${X(i)}" y1="0" x2="${X(i)}" y2="${H}" stroke="#fff" stroke-opacity="${i?.07:.5}"/>`;for(let j=-13;j<=13;j++)g+=`<line x1="0" y1="${Y(j*1)}" x2="${W_}" y2="${Y(j*1)}" stroke="#fff" stroke-opacity="${j?.05:.5}"/>`;let d='';for(let x=-9;x<=9;x+=.1){const y=p.a*x*x+p.b*x+p.c;d+=(d?'L':'M')+X(x).toFixed(1)+' '+Y(y).toFixed(1)}
+  const D=p.b*p.b-4*p.a*p.c,vx=p.a?-p.b/(2*p.a):0,vy=p.a*vx*vx+p.b*vx+p.c;let roots='';if(p.a&&D>=0){[(-p.b+Math.sqrt(D))/(2*p.a),(-p.b-Math.sqrt(D))/(2*p.a)].forEach(r=>roots+=`<circle cx="${X(r)}" cy="${oy}" r="5" fill="#34d399"/><text x="${X(r)}" y="${oy+20}" fill="#34d399" font-size="12" text-anchor="middle">${+r.toFixed(2)}</text>`)}
+  return svgWrap(W_,H,`<clipPath id="cl"><rect width="${W_}" height="${H}"/></clipPath>${g}<g clip-path="url(#cl)"><path d="${d}" fill="none" stroke="#a855f7" stroke-width="3.5"/></g>${roots}${p.a?`<circle cx="${X(vx)}" cy="${Y(vy)}" r="5" fill="#fbbf24"/><text x="${X(vx)+8}" y="${Y(vy)-8}" fill="#fbbf24" font-size="12">vertex (${+vx.toFixed(2)}, ${+vy.toFixed(2)})</text>`:''}<text x="14" y="26" fill="${W}" font-size="16" font-weight="700">y = ${p.a}x² ${p.b<0?'−':'+'} ${Math.abs(p.b)}x ${p.c<0?'−':'+'} ${Math.abs(p.c)}</text><text x="14" y="46" fill="#9b97c4" font-size="13">D = ${D.toFixed(2)} → ${!p.a?'not a quadratic (a = 0)':D>0?'two real roots':D===0?'one repeated root':'no real roots'}</text>`)}},
+{id:'tri',t:'Pythagoras theorem',s:'Mathematics',d:'3-4-5 triangle with squares on each side: 9 + 16 = 25.',svg:()=>svgWrap(480,470,`<polygon points="150,330 270,330 150,240" fill="#a855f7" fill-opacity=".35" stroke="#a855f7" stroke-width="2.5"/><rect x="150" y="330" width="120" height="120" fill="#3b82f6" fill-opacity=".3" stroke="#3b82f6" stroke-width="2"/><rect x="60" y="240" width="90" height="90" fill="#22d3ee" fill-opacity=".3" stroke="#22d3ee" stroke-width="2"/><polygon points="270,330 150,240 240,120 360,210" fill="#34d399" fill-opacity=".3" stroke="#34d399" stroke-width="2"/><path d="M150 312h18v18" fill="none" stroke="#fff" stroke-width="2"/><text x="210" y="395" fill="${W}" font-size="15" font-weight="700" text-anchor="middle">b = 4  →  b² = 16</text><text x="105" y="290" fill="${W}" font-size="14" font-weight="700" text-anchor="middle">a² = 9</text><text x="105" y="308" fill="#9b97c4" font-size="12" text-anchor="middle">(a = 3)</text><text x="300" y="215" fill="${W}" font-size="15" font-weight="700" text-anchor="middle" transform="rotate(-37 300 215)">c² = 25 (c = 5)</text><text x="240" y="30" fill="${W}" font-size="20" font-weight="800" text-anchor="middle">a² + b² = c²</text>`)},
+{id:'newton',t:"Newton's laws concept map",s:'Physics',d:'Concept map of the three laws.',svg:()=>svgWrap(760,420,arrowDef+box(285,160,190,80,"Newton's Laws",'#a855f7','of motion')+ln(330,160,170,100)+ln(380,160,380,100)+ln(430,160,590,100)+ln(330,240,170,300)+ln(380,240,380,300)+ln(430,240,590,300)+box(40,40,260,60,'1st: Inertia','#3b82f6','no net force → no change')+box(250,40,260,60,'2nd: F = m × a','#22d3ee','force makes acceleration')+box(460,40,260,60,'3rd: Action–Reaction','#34d399','equal and opposite')+box(40,300,260,60,'Example','#fbbf24','Passenger jerks when bus brakes')+box(250,300,260,60,'Example','#fbbf24','10 N on 2 kg → 5 m/s²')+box(460,300,260,60,'Example','#fbbf24','Rocket pushes gas down')).replace('<rect width="760" height="420" fill="#0e0c1d"/>','<rect width="760" height="420" fill="#0e0c1d"/>')}];
+let dcur=null,dparams={},zoom=1;
+function renderDList(){$('#dList').innerHTML=DIAGS.map(d=>`<button class="item" data-d="${d.id}" style="width:100%;text-align:left;${dcur&&dcur.id===d.id?'border-color:var(--p)':''}"><div class="t"><b>${d.t}</b><small>${d.s}</small></div></button>`).join('')}
+function drawDiagram(){$('#zoom').innerHTML=dcur.svg(dparams);$('#zoom').style.transform=`scale(${zoom})`;$('#zReset').textContent=Math.round(zoom*100)+'%'}
+function openDiagram(id){dcur=DIAGS.find(d=>d.id===id)||DIAGS[0];dparams=Object.assign({},dcur.params);zoom=1;$('#dTitle').textContent=dcur.t;$('#dDesc').textContent=dcur.d;markViewed('Diagram: '+dcur.t);
+  $('#dCtl').innerHTML=dcur.params?`<div class="sliders">${['a','b','c'].map(k=>`<div><label>${k} = <span id="v${k}">${dparams[k]}</span></label><input type="range" min="${k==='a'?-3:-10}" max="${k==='a'?3:10}" step="${k==='a'?.5:1}" value="${dparams[k]}" data-p="${k}" aria-label="Value of ${k}"></div>`).join('')}</div>`:'';
+  if(!$('#p-visual').classList.contains('on'))go('visual');else{renderDList();drawDiagram()}}
+$('#dCtl').addEventListener('input',e=>{const k=e.target.dataset.p;if(!k)return;dparams[k]=+e.target.value;$('#v'+k).textContent=e.target.value;drawDiagram()});
+$('#dList').addEventListener('click',e=>{const b=e.target.closest('[data-d]');if(b)openDiagram(b.dataset.d)});
+$('#zIn').onclick=()=>{zoom=Math.min(3,zoom+.25);drawDiagram()};$('#zOut').onclick=()=>{zoom=Math.max(.5,zoom-.25);drawDiagram()};$('#zReset').onclick=()=>{zoom=1;drawDiagram()};
+$('#dFull').onclick=()=>{const s=$('#stage');document.fullscreenElement?document.exitFullscreen():(s.requestFullscreen?s.requestFullscreen():toast('Fullscreen not supported here.'))};
+function svgToPng(svg,cb){const m=svg.match(/width="(\d+)" height="(\d+)"/),w=+m[1],h=+m[2],img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=w*2;c.height=h*2;const x=c.getContext('2d');x.scale(2,2);x.drawImage(img,0,0);c.toBlob(cb,'image/png')};img.onerror=()=>toast('Could not render PNG.');img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)}
+$('#dPng').onclick=()=>svgToPng(dcur.svg(dparams),b=>dl(dcur.id+'.png',b));
+$('#dSvg').onclick=()=>dl(dcur.id+'.svg',new Blob([dcur.svg(dparams)],{type:'image/svg+xml'}));
+$('#dSave').onclick=()=>addLib({type:'diagram',title:dcur.t,content:dcur.svg(dparams),did:dcur.id});
+INIT.visual=()=>{if(!dcur)return openDiagram('photo');renderDList();drawDiagram()};
+
+/* ---------- notes ---------- */
+const SECS=[['short','Short notes'],['detailed','Detailed notes'],['defs','Key definitions'],['formulas','Formulas'],['example','Worked example'],['summary','Chapter summary'],['revision','Revision sheet'],['questions','Practice questions'],['cards','Flashcards']];
+$('#nChecks').innerHTML=SECS.map(([k,n],i)=>`<label><input type="checkbox" value="${k}" ${i<3||k==='formulas'||k==='questions'?'checked':''}>${n}</label>`).join('');
+['Mathematics','Science','Physics','Chemistry','Biology','History','Geography','English','Other'].forEach(s=>$('#nSub').insertAdjacentHTML('beforeend',`<option>${s}</option>`));
+const NOTES={photosynthesis:{title:'Photosynthesis',short:'- Plants make glucose from CO₂ and water using sunlight.\n- Happens in chloroplasts; chlorophyll absorbs light.\n- Oxygen is released as a by-product.',detailed:'Photosynthesis has two stages. In the **light reactions** (thylakoids) light splits water, releasing oxygen and making energy carriers. In the **Calvin cycle** (stroma) CO₂ is fixed into glucose. Leaves are adapted with a large surface area, stomata for gas exchange and veins for water supply.',defs:'- **Chlorophyll:** green pigment that absorbs light.\n- **Stomata:** tiny leaf pores for gas exchange.\n- **Chloroplast:** organelle where photosynthesis occurs.',formulas:'6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂',example:'**Q:** How many molecules of O₂ are released when 3 molecules of glucose form?\n**A:** 6 O₂ per glucose × 3 = **18 O₂**.',summary:'Photosynthesis converts light energy into chemical energy stored in glucose and sustains almost all life on Earth by supplying food and oxygen.',revision:'- Raw materials: CO₂, water, sunlight\n- Products: glucose, oxygen\n- Site: chloroplast\n- Pigment: chlorophyll\n- Gas exchange: stomata',questions:'- State the equation of photosynthesis.\n- Why are leaves green?\n- Name two raw materials taken from the environment.\n- What is the role of stomata?',cards:'- **Q:** Where does photosynthesis occur? → **A:** Chloroplasts\n- **Q:** Which gas is released? → **A:** Oxygen\n- **Q:** Which pigment traps light? → **A:** Chlorophyll'},
+newton:{title:"Newton's Laws of Motion",short:'- 1st: inertia. 2nd: F = ma. 3rd: action–reaction.\n- Force is measured in newtons (N).',detailed:'Newton\'s **first law** says an object keeps its state of rest or uniform motion unless an unbalanced force acts. The **second law** says acceleration is directly proportional to net force and inversely proportional to mass. The **third law** says forces always occur in equal and opposite pairs acting on different bodies.',defs:'- **Inertia:** tendency of a body to resist change in its motion.\n- **Force:** a push or pull.\n- **Momentum:** mass × velocity.',formulas:'F = m × a\np = m × v\n1 N = 1 kg·m/s²',example:'**Q:** A 5 kg box is pushed with 20 N. Find acceleration.\n**A:** a = F/m = 20/5 = **4 m/s²**.',summary:'The three laws describe how forces change motion and underpin mechanics, from cricket balls to rockets.',revision:'- Inertia depends on mass\n- F = ma\n- Action and reaction act on different bodies',questions:'- Why do passengers fall forward when a bus stops suddenly?\n- Calculate the force to accelerate 2 kg at 3 m/s².\n- Give two examples of the third law.',cards:'- **Q:** SI unit of force? → **A:** Newton\n- **Q:** Formula of 2nd law? → **A:** F = ma'},
+pythagoras:{title:'Pythagoras Theorem',short:'- In a right triangle, a² + b² = c².\n- c is the hypotenuse, opposite the right angle.',detailed:'The theorem links the three sides of any right-angled triangle. It can be proved with similar triangles or by rearranging four copies of the triangle inside a square. It is used to find distances, heights and diagonals.',defs:'- **Hypotenuse:** longest side of a right triangle.\n- **Pythagorean triple:** whole numbers satisfying a² + b² = c², e.g. 3-4-5, 5-12-13.',formulas:'a² + b² = c²\nc = √(a² + b²)',example:'**Q:** Legs 6 and 8. Find hypotenuse.\n**A:** c² = 36 + 64 = 100 → **c = 10**.',summary:'Use the theorem only for right-angled triangles to find a missing side.',revision:'- Identify the hypotenuse first\n- Square, add (or subtract), then take the square root',questions:'- Find the diagonal of a 9 cm × 12 cm rectangle.\n- Is 7, 24, 25 a Pythagorean triple?',cards:'- **Q:** Formula? → **A:** a² + b² = c²\n- **Q:** Triple after 3-4-5? → **A:** 5-12-13'}};
+let nDemo=true;
+function extract(t){const s=t.replace(/\s+/g,' ').match(/[^.!?।]+[.!?।]?/g)||[];return s.map(x=>x.trim()).filter(x=>x.length>20).slice(0,6)}
+async function genNotes(){const topic=$('#nTopic').value.trim(),text=$('#nText').value.trim(),sel=$$('#nChecks input:checked').map(i=>i.value);if(!topic&&!text)return toast('Enter a topic or paste some text first.');if(!sel.length)return toast('Select at least one section.');
+  $('#nGen').disabled=true;$('#nRegen').disabled=true;$('#nNote').textContent='Generating…';
+  try{let out;if(backend){out=await callAI({task:'notes',subject:$('#nSub').value,topic,text,sections:sel.map(k=>SECS.find(s=>s[0]===k)[1]),grade:settings.cls});nDemo=false;$('#nBadge').innerHTML='<span class="pill live">AI generated</span>'}
+    else{const key=Object.keys(NOTES).find(k=>(topic.toLowerCase()).includes(k));if(key){const n=NOTES[key];out=`# ${n.title}\n`+sel.map(k=>`\n## ${SECS.find(s=>s[0]===k)[1]}\n${n[k]}`).join('\n');$('#nBadge').innerHTML='<span class="pill demo">DEMO sample notes</span>'}
+      else if(text){const pts=extract(text);out=`# ${topic||'Notes from pasted text'}\n\n## Key points (basic offline extract)\n`+(pts.length?pts.map(p=>'- '+p).join('\n'):'- (Text too short to extract points.)')+'\n\n> Offline mode picks sentences from your text; it is not AI summarisation.';$('#nBadge').innerHTML='<span class="pill demo">OFFLINE extract — not AI</span>'}
+      else{out=`# ${topic}\n`+sel.map(k=>`\n## ${SECS.find(s=>s[0]===k)[1]}\n- (write here)`).join('\n');$('#nBadge').innerHTML='<span class="pill demo">EMPTY template</span>'}
+      $('#nNote').textContent=key||text?'':'No sample for this topic. Connect the AI backend to generate real notes — this is an empty template.';nDemo=true}
+    $('#noteEditor').value=out;markViewed('Notes: '+(topic||'pasted text'));if(backend)$('#nNote').textContent=''}
+  catch(e){$('#nNote').textContent='';toast(e.message==='NO_BACKEND'?'AI backend not connected.':'Failed: '+e.message)}
+  $('#nGen').disabled=false;$('#nRegen').disabled=false}
+$('#nGen').onclick=genNotes;$('#nRegen').onclick=genNotes;
+$('#nCopy').onclick=async()=>{const v=$('#noteEditor').value;if(!v)return toast('Nothing to copy.');try{await navigator.clipboard.writeText(v);toast('Copied to clipboard')}catch{$('#noteEditor').select();document.execCommand('copy');toast('Copied')}};
+$('#nSave').onclick=()=>{const v=$('#noteEditor').value.trim();if(!v)return toast('Nothing to save yet.');addLib({type:'note',title:(v.split('\n')[0].replace(/^#+\s*/,'')||'Untitled notes').slice(0,60),content:v})};
+function noteExports(title,text){const html='<h2>'+esc(title)+'</h2>'+md(text);return html}
+$('#nPrev').onclick=()=>{const v=$('#noteEditor').value.trim();if(!v)return toast('Generate or write some notes first.');previewDoc(($('#nTopic').value||'notes').trim(),v)};
+function previewDoc(title,text){openModal(`<div class="row"><h3 style="margin:0">Document preview</h3><div class="sp"></div><button class="btn sm" onclick="closeModal()">✕ Close</button></div><div class="paper" style="margin:12px 0">${md(text)}</div><div class="row"><button class="btn pri" id="xTxt">⬇ TXT</button><button class="btn pri" id="xPdf">⬇ PDF</button><button class="btn pri" id="xPng">⬇ PNG</button></div><div class="sub" style="margin-top:8px">PDF opens your browser's print dialog — choose “Save as PDF”.</div>`);
+  const fn=title.replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-')||'notes';$('#xTxt').onclick=()=>dl(fn+'.txt',new Blob([text],{type:'text/plain'}));$('#xPng').onclick=()=>textToPng(text).toBlob(b=>dl(fn+'.png',b));$('#xPdf').onclick=()=>printDoc(title,md(text))}
+function printDoc(title,html){const f=document.createElement('iframe');f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';document.body.appendChild(f);const d=f.contentDocument;d.open();d.write(`<!doctype html><meta charset="utf-8"><title>${esc(title)}</title><style>body{font:14px/1.6 Arial,sans-serif;padding:24px;color:#111}h2{color:#4c1d95}h3{color:#1d4ed8;border-bottom:1px solid #ddd;padding-bottom:3px}.sp{height:8px}</style>${html}<p style="color:#999;font-size:11px">Made with SchoolVerse</p>`);d.close();setTimeout(()=>{f.contentWindow.focus();f.contentWindow.print();setTimeout(()=>f.remove(),3000)},350)}
+function textToPng(text){const Wd=900,pad=48,c=document.createElement('canvas'),x=c.getContext('2d'),lines=[];const F={h1:['bold 28px Arial',40],h2:['bold 21px Arial',32],h3:['bold 17px Arial',26],p:['16px Arial',24],li:['16px Arial',24]};
+  for(const l of text.split('\n')){let k='p',t=l;if(l.startsWith('# ')){k='h1';t=l.slice(2)}else if(l.startsWith('## ')){k='h2';t=l.slice(3)}else if(l.startsWith('### ')){k='h3';t=l.slice(4)}else if(l.startsWith('- ')){k='li';t='• '+l.slice(2)}t=t.replace(/\*\*/g,'');const[f,lh]=F[k];x.font=f;if(!t.trim()){lines.push({t:'',f,lh:10,k});continue}const mw=Wd-pad*2-(k==='li'?16:0);let cur='';for(const w of t.split(' ')){const test=cur?cur+' '+w:w;if(x.measureText(test).width>mw&&cur){lines.push({t:cur,f,lh,k});cur=w}else cur=test}lines.push({t:cur,f,lh,k})}
+  const H=pad*2+lines.reduce((a,l)=>a+l.lh,0)+24;c.width=Wd*2;c.height=H*2;x.scale(2,2);x.fillStyle='#fff';x.fillRect(0,0,Wd,H);let y=pad;for(const l of lines){y+=l.lh;x.font=l.f;x.fillStyle=l.k==='h1'?'#4c1d95':l.k==='h2'?'#1d4ed8':'#1b1740';x.fillText(l.t,pad+(l.k==='li'?16:0),y-6)}x.font='12px Arial';x.fillStyle='#999';x.fillText('Made with SchoolVerse',pad,H-14);return c}
+
+/* ---------- timer ---------- */
+const PRE=[['25 / 5',25,5],['50 / 10',50,10],['90 / 15',90,15]];
+let tm={mode:'focus',total:1500,rem:1500,run:false,end:0,iv:null,fm:25,bm:5};
+$('#presets').innerHTML=PRE.map((p,i)=>`<button data-pre="${i}" class="${i?'':'on'}">🍅 ${p[0]}</button>`).join('');
+const fmt=s=>{const h=s/3600|0,m=(s%3600)/60|0,ss=s%60;return(h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0')};
+function drawTimer(){const t=fmt(Math.ceil(tm.rem));$('#tClock').textContent=t;$('#foClock').textContent=t;const lbl=tm.mode==='focus'?'Focus':'Break';$('#tMode').textContent=lbl;$('#foMode').textContent=lbl;$('#ringFg').style.strokeDashoffset=578.05*(1-(tm.total?tm.rem/tm.total:0));$('#tStart').textContent=tm.run?'⏸ Pause':(tm.rem<tm.total?'▶ Resume':'▶ Start');$('#foToggle').textContent=tm.run?'⏸ Pause':'▶ Start';document.title=tm.run?`${t} · SchoolVerse`:'SchoolVerse — AI Study Platform'}
+function setTime(sec,mode){clearInterval(tm.iv);tm.run=false;tm.mode=mode||tm.mode;tm.total=tm.rem=Math.max(1,sec|0);drawTimer()}
+function tick(){tm.rem=Math.max(0,(tm.end-Date.now())/1000);if(tm.rem<=0)return finish();drawTimer()}
+function startT(){if(tm.run){clearInterval(tm.iv);tm.run=false;tm.rem=Math.max(0,(tm.end-Date.now())/1000);drawTimer();return}if('Notification' in window&&Notification.permission==='default')Notification.requestPermission();tm.run=true;tm.end=Date.now()+tm.rem*1000;tm.iv=setInterval(tick,250);drawTimer()}
+function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach(d=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.2,a.currentTime+d);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d+.2);o.start(a.currentTime+d);o.stop(a.currentTime+d+.22)})}catch{}}
+function finish(){clearInterval(tm.iv);tm.run=false;const wasFocus=tm.mode==='focus';if(wasFocus){const s=store.get('focus',{}),k=dkey();s[k]=s[k]||{sec:0,n:0};s[k].sec+=tm.total;s[k].n++;store.set('focus',s);renderStats()}
+  beep();const msg=wasFocus?'Focus session complete! Take a break 🎉':'Break over — back to it! 💪';toast(msg);if('Notification' in window&&Notification.permission==='granted')new Notification('SchoolVerse',{body:msg});
+  if($('#autoSw').checked)setTime((wasFocus?tm.bm:tm.fm)*60,wasFocus?'break':'focus');else{tm.rem=0;drawTimer()}}
+function renderStats(){const s=store.get('focus',{}),t=s[dkey()]||{sec:0,n:0};$('#tdMin').textContent=Math.round(t.sec/60);$('#tdSes').textContent=t.n;const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return[d.toLocaleDateString(undefined,{weekday:'short'}),(s[dkey(d)]||{sec:0}).sec/60]});const mx=Math.max(30,...days.map(d=>d[1]));$('#wk').innerHTML=days.map(([n,m])=>`<div><i style="height:${m/mx*80}px" title="${Math.round(m)} min"></i>${n}</div>`).join('')}
+$('#presets').addEventListener('click',e=>{const b=e.target.closest('[data-pre]');if(!b)return;const p=PRE[+b.dataset.pre];tm.fm=p[1];tm.bm=p[2];$('#fMin').value=p[1];$('#bMin').value=p[2];$$('#presets button').forEach(x=>x.classList.toggle('on',x===b));setTime(p[1]*60,'focus')});
+$('#tStart').onclick=startT;$('#foToggle').onclick=startT;$('#tReset').onclick=()=>setTime(tm.total);
+$('#tSet').onclick=()=>{const s=(+$('#hIn').value||0)*3600+(+$('#mIn').value||0)*60+(+$('#sIn').value||0);if(s<1)return toast('Enter a time greater than zero.');setTime(s,'focus');$$('#presets button').forEach(x=>x.classList.remove('on'))};
+['#fMin','#bMin'].forEach(s=>$(s).onchange=()=>{tm.fm=Math.max(1,+$('#fMin').value||25);tm.bm=Math.max(1,+$('#bMin').value||5);if(!tm.run)setTime((tm.mode==='focus'?tm.fm:tm.bm)*60)});
+$('#tFull').onclick=()=>{$('#focusOverlay').classList.add('on');document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen().catch(()=>{})};
+$('#foExit').onclick=()=>{$('#focusOverlay').classList.remove('on');document.fullscreenElement&&document.exitFullscreen()};
+INIT.focus=()=>{drawTimer();renderStats()};
+
+/* ---------- quiz ---------- */
+const Q=(s,c,d,q,o,a,e)=>({s,c,d,q,o,a,e});
+const QB=[Q('Biology','Photosynthesis','easy','Which gas do plants absorb for photosynthesis?',['Oxygen','Carbon dioxide','Nitrogen','Hydrogen'],1,'Plants take in CO₂ through stomata and use it to make glucose.'),
+Q('Biology','Cell','easy','Which organelle is called the powerhouse of the cell?',['Nucleus','Ribosome','Mitochondria','Vacuole'],2,'Mitochondria release energy from food during respiration.'),
+Q('Physics','Laws of Motion','medium','Rocket propulsion is best explained by which law?',["Newton's 1st law","Newton's 2nd law","Newton's 3rd law","Law of gravitation"],2,'The rocket pushes gas down; the gas pushes the rocket up — action and reaction.'),
+Q('Physics','Laws of Motion','medium','A 2 kg object is pushed with 10 N. Its acceleration is…',['2 m/s²','5 m/s²','10 m/s²','20 m/s²'],1,'a = F/m = 10/2 = 5 m/s².'),
+Q('Physics','Electricity','hard','2 Ω and 3 Ω resistors in series are connected to 10 V. The current is…',['1 A','2 A','5 A','10 A'],1,'R = 2 + 3 = 5 Ω, so I = V/R = 10/5 = 2 A.'),
+Q('Chemistry','Acids & Bases','medium','What is the pH of a neutral solution at 25 °C?',['0','5','7','14'],2,'Pure water is neutral with pH 7.'),
+Q('Chemistry','Atoms','easy','The chemical symbol for sodium is…',['So','Na','S','Sd'],1,'Na comes from the Latin “natrium”.'),
+Q('Chemistry','Atoms','medium','What is the valency of carbon?',['1','2','3','4'],3,'Carbon has 4 electrons in its outer shell, so valency 4.'),
+Q('Chemistry','Mole Concept','hard','How many moles are in 36 g of water (M = 18 g/mol)?',['0.5','1','2','4'],2,'Moles = mass / molar mass = 36/18 = 2.'),
+Q('Mathematics','Arithmetic','easy','What is 12 × 12?',['124','132','144','154'],2,'12 × 12 = 144.'),
+Q('Mathematics','Triangles','easy','The sum of angles in a triangle is…',['90°','180°','270°','360°'],1,'Interior angles of any triangle add up to 180°.'),
+Q('Mathematics','Linear Equations','medium','Solve 2x + 6 = 14.',['x = 3','x = 4','x = 5','x = 10'],1,'2x = 8, so x = 4.'),
+Q('Mathematics','Triangles','medium','The hypotenuse of a right triangle with legs 6 and 8 is…',['9','10','12','14'],1,'c² = 36 + 64 = 100, so c = 10.'),
+Q('Mathematics','Quadratic Equations','hard','The roots of x² − 5x + 6 = 0 are…',['1 and 6','2 and 3','−2 and −3','5 and 1'],1,'(x − 2)(x − 3) = 0.'),
+Q('Mathematics','Progressions','hard','The 10th term of the AP 3, 7, 11, … is…',['35','39','43','47'],1,'a₁₀ = 3 + 9×4 = 39.'),
+Q('Geography','India','easy','What is the capital of India?',['Mumbai','Kolkata','New Delhi','Chennai'],2,'New Delhi is the capital.'),
+Q('Geography','Rivers','medium','Which is the longest river flowing through India?',['Yamuna','Ganga','Godavari','Narmada'],1,'The Ganga is the longest river of India.'),
+Q('Geography','Oceans','easy','Which is the largest ocean?',['Atlantic','Indian','Arctic','Pacific'],3,'The Pacific covers about a third of Earth.'),
+Q('History','Modern India','medium','Who was the first Prime Minister of independent India?',['Sardar Patel','Jawaharlal Nehru','Dr. Rajendra Prasad','Lal Bahadur Shastri'],1,'Nehru took office on 15 August 1947.'),
+Q('History','British Rule','hard','In which year was the Battle of Plassey fought?',['1757','1764','1857','1707'],0,'Plassey (1757) established East India Company power in Bengal.'),
+Q('English','Grammar','easy','What is the plural of “child”?',['childs','childen','children','childrens'],2,'“Child” has an irregular plural.'),
+Q('English','Vocabulary','medium','Choose a synonym of “rapid”.',['Slow','Quick','Weak','Quiet'],1,'Rapid means quick or fast.'),
+Q('English','Figures of Speech','hard','“The wind whispered through the trees” is an example of…',['Simile','Metaphor','Personification','Alliteration'],2,'The wind is given a human action — whispering.')];
+let qz={mode:'setup',cfg:{s:'All',c:'All',d:'Any',n:'10'},list:[],i:0,score:0,sel:null,miss:[],ai:false};
+const qbox=()=>$('#quizBox');
+function qPool(){return QB.filter(q=>(qz.cfg.s==='All'||q.s===qz.cfg.s)&&(qz.cfg.c==='All'||q.c===qz.cfg.c)&&(qz.cfg.d==='Any'||q.d===qz.cfg.d))}
+function quizSetup(){const subs=['All',...new Set(QB.map(q=>q.s))],chs=['All',...new Set(QB.filter(q=>qz.cfg.s==='All'||q.s===qz.cfg.s).map(q=>q.c))];const sel=(id,arr,v)=>`<select id="${id}">${arr.map(a=>`<option ${a===v?'selected':''}>${a}</option>`).join('')}</select>`;
+  qbox().innerHTML=`<div class="hero" style="margin-bottom:16px"><h2>🏆 Quiz Arena</h2><p>Pick a subject, beat your best score, or flip flashcards to revise.</p></div><div class="card"><div class="grid g4"><div><label>Subject</label>${sel('qS',subs,qz.cfg.s)}</div><div><label>Chapter</label>${sel('qC',chs,qz.cfg.c)}</div><div><label>Difficulty</label>${sel('qD',['Any','easy','medium','hard'],qz.cfg.d)}</div><div><label>Questions</label>${sel('qN',['5','10','All'],qz.cfg.n)}</div></div>
+  <div class="row" style="margin-top:16px"><button class="btn pri" id="qStart">▶ Start quiz</button><button class="btn" id="qCards">🃏 Revision flashcards</button><button class="btn" id="qAi">✨ Generate with AI</button><span class="pill demo">${QB.length} built-in sample questions</span></div><div class="sub" id="qMsg" style="margin-top:10px"></div></div>
+  <div class="card" style="margin-top:16px"><h3>Recent results</h3>${(store.get('quizzes',[]).slice(0,5).map(r=>`<div class="item"><span>🎯</span><div class="t"><b>${r.subject} · ${r.diff}</b><small>${new Date(r.ts).toLocaleString()}</small></div><b>${r.score}/${r.total}</b></div>`).join(''))||'<div class="empty"><span class="em">🎮</span>No quizzes yet — start your first one!</div>'}</div>`;
+  const rd=()=>{qz.cfg={s:$('#qS').value,c:$('#qC').value,d:$('#qD').value,n:$('#qN').value}};
+  $('#qS').onchange=()=>{rd();qz.cfg.c='All';quizSetup()};['#qC','#qD','#qN'].forEach(s=>$(s).onchange=rd);
+  $('#qStart').onclick=()=>{rd();const p=shuffle(qPool());if(!p.length){$('#qMsg').textContent='No questions match these filters. Try “Any” difficulty.';return}qz.list=qz.cfg.n==='All'?p:p.slice(0,+qz.cfg.n);qz.ai=false;beginQuiz()};
+  $('#qCards').onclick=()=>{rd();const p=qPool();if(!p.length){$('#qMsg').textContent='No cards match these filters.';return}qz.list=shuffle(p);qz.i=0;qz.mode='cards';renderQuiz()};
+  $('#qAi').onclick=async()=>{rd();if(!backend){$('#qMsg').innerHTML=md(SETUP_MSG);return}$('#qMsg').textContent='Generating questions…';try{const r=await callAI({task:'quiz',subject:qz.cfg.s==='All'?'General school subjects':qz.cfg.s,chapter:qz.cfg.c,difficulty:qz.cfg.d,count:+qz.cfg.n||10,grade:settings.cls});const arr=JSON.parse(r.slice(r.indexOf('['),r.lastIndexOf(']')+1));qz.list=arr.filter(x=>x.q&&Array.isArray(x.o)&&x.o.length>1&&Number.isInteger(x.a)).map(x=>Q(qz.cfg.s,qz.cfg.c,qz.cfg.d,x.q,x.o,x.a,x.e||''));if(!qz.list.length)throw new Error('No valid questions returned');qz.ai=true;beginQuiz()}catch(e){$('#qMsg').textContent='Could not generate questions: '+e.message}}}
+function beginQuiz(){qz.i=0;qz.score=0;qz.sel=null;qz.miss=[];qz.mode='play';renderQuiz()}
+function renderQuiz(){if(qz.mode==='setup')return quizSetup();const q=qz.list[qz.i];
+  if(qz.mode==='cards'){qbox().innerHTML=`<div class="row" style="margin-bottom:12px"><button class="btn sm" id="qBack">← Back</button><div class="sp"></div><span class="pill">Card ${qz.i+1} / ${qz.list.length}</span></div><div class="fc" id="fc" tabindex="0" role="button" aria-label="Flip card"><div><div class="f">${esc(q.q)}</div><div class="f bk"><div><b style="font-size:19px">${esc(q.o[q.a])}</b><br><br>${esc(q.e)}</div></div></div></div><div class="sub" style="text-align:center;margin:10px">Tap the card to flip</div><div class="row" style="justify-content:center"><button class="btn" id="cPrev">← Prev</button><button class="btn pri" id="cNext">Next →</button></div>`;
+    const fl=()=>$('#fc').classList.toggle('flip');$('#fc').onclick=fl;$('#fc').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fl()}};$('#qBack').onclick=()=>{qz.mode='setup';renderQuiz()};$('#cPrev').onclick=()=>{qz.i=(qz.i-1+qz.list.length)%qz.list.length;renderQuiz()};$('#cNext').onclick=()=>{qz.i=(qz.i+1)%qz.list.length;renderQuiz()};return}
+  if(qz.mode==='result'){const pct=Math.round(qz.score/qz.list.length*100);qbox().innerHTML=`<div class="card" style="text-align:center"><div class="score">${qz.score}/${qz.list.length}</div><h2>${pct>=80?'Brilliant! 🌟':pct>=50?'Good effort! 👍':'Keep practising 💪'}</h2><div class="sub">${pct}% correct${qz.ai?' · AI-generated questions':' · sample questions'}</div>${qz.miss.length?`<div style="text-align:left;margin-top:18px"><h3>Review missed questions</h3>${qz.miss.map(m=>`<div class="item"><div class="t"><b style="white-space:normal">${esc(m.q)}</b><small>Answer: ${esc(m.o[m.a])} — ${esc(m.e)}</small></div></div>`).join('')}</div>`:''}<div class="row" style="justify-content:center;margin-top:16px"><button class="btn pri" id="qAgain">↻ Try again</button><button class="btn" id="qHome">Change settings</button></div></div>`;$('#qAgain').onclick=()=>{qz.list=shuffle(qz.list);beginQuiz()};$('#qHome').onclick=()=>{qz.mode='setup';renderQuiz()};return}
+  qbox().innerHTML=`<div class="card"><div class="row"><span class="pill">${esc(q.s)} · ${esc(q.c)}</span><span class="pill">${q.d}</span><div class="sp"></div><b>Score ${qz.score}</b></div><div class="bar" style="margin:12px 0"><i style="width:${qz.i/qz.list.length*100}%"></i></div><h2 style="margin-bottom:16px;font-size:20px">Q${qz.i+1}. ${esc(q.q)}</h2>${q.o.map((o,i)=>`<button class="opt" data-o="${i}">${String.fromCharCode(65+i)}. ${esc(o)}</button>`).join('')}<div id="qFb"></div></div>`;
+  $$('.opt').forEach(b=>b.onclick=()=>{if(qz.sel!=null)return;const i=+b.dataset.o;qz.sel=i;$$('.opt').forEach((x,j)=>{x.disabled=true;if(j===q.a)x.classList.add('ok')});if(i===q.a)qz.score++;else{b.classList.add('bad');qz.miss.push(q)}
+    $('#qFb').innerHTML=`<div class="item" style="margin-top:8px;border-color:${i===q.a?'var(--ok)':'var(--bad)'}"><div class="t"><b style="white-space:normal">${i===q.a?'✅ Correct!':'❌ Not quite.'}</b><small style="white-space:normal">${esc(q.e)}</small></div></div><button class="btn pri" id="qNext" style="margin-top:6px">${qz.i+1<qz.list.length?'Next →':'See results'}</button>`;$('#qNext').focus();
+    $('#qNext').onclick=()=>{qz.sel=null;if(qz.i+1<qz.list.length){qz.i++;renderQuiz()}else{const h=store.get('quizzes',[]);h.unshift({ts:Date.now(),subject:qz.cfg.s,diff:qz.cfg.d,score:qz.score,total:qz.list.length});store.set('quizzes',h.slice(0,50));qz.mode='result';renderQuiz()}}})}
+INIT.quiz=()=>{if(qz.mode==='setup'||qz.mode==='result')quizSetup();else renderQuiz()};
+
+/* ---------- library ---------- */
+let libTab='all';
+const TABS=[['all','All'],['note','Notes'],['diagram','Diagrams'],['answer','Answers'],['chat','Chats'],['activity','Activity']];
+function renderLib(){$('#libTabs').innerHTML=TABS.map(([k,n])=>`<button data-t="${k}" class="${k===libTab?'on':''}">${n}</button>`).join('');const q=$('#libSearch').value.toLowerCase();let h='';
+  if(libTab==='activity'){const qs=store.get('quizzes',[]),fs=store.get('focus',{});h=`<h3>Completed quizzes</h3>${qs.map(r=>`<div class="item"><span>🎯</span><div class="t"><b>${r.subject} · ${r.diff}</b><small>${new Date(r.ts).toLocaleString()}</small></div><b>${r.score}/${r.total}</b></div>`).join('')||'<div class="empty">No quizzes completed yet.</div>'}<h3 style="margin-top:18px">Study sessions</h3>${Object.keys(fs).sort().reverse().slice(0,14).map(k=>`<div class="item"><span>⏱️</span><div class="t"><b>${k}</b><small>${fs[k].n} session(s)</small></div><b>${Math.round(fs[k].sec/60)} min</b></div>`).join('')||'<div class="empty">No focus sessions yet.</div>'}`}
+  else{let items=[];if(libTab!=='chat')items=lib().filter(i=>(libTab==='all'||i.type===libTab)&&(i.title+' '+(i.type!=='diagram'?i.content:'')).toLowerCase().includes(q));
+    h=items.map(i=>`<div class="item"><span style="font-size:22px">${ICON_T[i.type]}</span><div class="t"><b>${esc(i.title)}</b><small>${i.type} · ${new Date(i.ts).toLocaleDateString()}</small></div><button class="btn sm" data-a="open" data-id="${i.id}">Open</button><button class="btn sm" data-a="dl" data-id="${i.id}">⬇</button><button class="btn sm" data-a="ren" data-id="${i.id}">✎</button><button class="btn sm danger" data-a="del" data-id="${i.id}">🗑</button></div>`).join('');
+    if(libTab==='all'||libTab==='chat'){const cs=chats.filter(c=>c.title.toLowerCase().includes(q));if(libTab==='chat'||cs.length)h+=(libTab==='all'&&cs.length?'<h3 style="margin-top:16px">Recent AI conversations</h3>':'')+cs.map(c=>`<div class="item"><span style="font-size:22px">💬</span><div class="t"><b>${esc(c.title)}</b><small>${c.msgs.length} messages · ${new Date(c.ts).toLocaleDateString()}</small></div><button class="btn sm" data-a="chat" data-id="${c.id}">Open</button><button class="btn sm danger" data-a="delchat" data-id="${c.id}">🗑</button></div>`).join('')}
+    if(!h)h=`<div class="empty"><span class="em">📭</span>${q?'Nothing matches your search.':'Your library is empty. Save notes, diagrams and answers to see them here.'}</div>`}
+  $('#libList').innerHTML=h}
+$('#libTabs').onclick=e=>{const b=e.target.closest('[data-t]');if(b){libTab=b.dataset.t;renderLib()}};$('#libSearch').oninput=renderLib;
+$('#libList').onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;const id=b.dataset.id,a=b.dataset.a;let l=lib();const it=l.find(x=>x.id===id);
+  if(a==='chat'){cur=chats.find(c=>c.id===id);go('tutor');renderChat();return}
+  if(a==='delchat'){if(confirm('Delete this conversation?')){chats=chats.filter(c=>c.id!==id);store.set('chats',chats);if(cur&&cur.id===id)cur=null;renderLib()}return}
+  if(!it)return;
+  if(a==='open'){markViewed(it.title);it.type==='diagram'?openModal(`<div class="row"><h3 style="margin:0">${esc(it.title)}</h3><div class="sp"></div><button class="btn sm" onclick="closeModal()">✕ Close</button></div><div style="overflow:auto;margin-top:12px">${it.content}</div>`):previewDoc(it.title,it.content)}
+  if(a==='ren'){const n=prompt('Rename to:',it.title);if(n&&n.trim()){it.title=n.trim().slice(0,80);store.set('lib',l);renderLib()}}
+  if(a==='del'){if(confirm('Delete “'+it.title+'”?')){store.set('lib',l.filter(x=>x.id!==id));renderLib()}}
+  if(a==='dl'){const fn=it.title.replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-')||'item';if(it.type==='diagram')svgToPng(it.content,bl=>dl(fn+'.png',bl));else dl(fn+'.txt',new Blob([it.content],{type:'text/plain'}))}};
+INIT.library=renderLib;
+
+/* ---------- settings ---------- */
+for(let c=6;c<=12;c++)$('#setClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`);
+INIT.settings=()=>{$('#setName').value=settings.name;$('#setClass').value=settings.cls;$('#setRate').value=settings.rate;$('#rateV').textContent=settings.rate;$('#setBackend').value=settings.backend}
+$('#setName').oninput=e=>{settings.name=e.target.value.trim()||'Student';saveSettings();renderMenu()};
+$('#setClass').onchange=e=>{settings.cls=e.target.value;saveSettings();renderMenu()};
+$('#setRate').oninput=e=>{settings.rate=+e.target.value;$('#rateV').textContent=settings.rate;saveSettings()};
+$('#setTheme').onclick=()=>setTheme(settings.theme==='dark'?'light':'dark');
+$('#setSave').onclick=async()=>{settings.backend=$('#setBackend').value.trim();saveSettings();await detectBackend();toast(backend?'Connected to AI backend ✓':'Backend not reachable — still in demo mode.')};
+$('#setReset').onclick=()=>{if(confirm('Delete ALL SchoolVerse data stored in this browser?')){Object.keys(localStorage).filter(k=>k.startsWith('sv_')).forEach(k=>localStorage.removeItem(k));location.reload()}};
+
+/* ---------- boot ---------- */
+setTheme(settings.theme);renderMenu();
+window.addEventListener('hashchange',()=>go(location.hash.slice(1),false));
+go(location.hash.slice(1)||'home',false);
+detectBackend().then(()=>{if($('#p-tutor').classList.contains('on')&&cur&&!cur.msgs.length)renderChat()});
+</script>
+</body>
+</html>
